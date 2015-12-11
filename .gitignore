@@ -1,5 +1,5 @@
 default.properties
-**/stanford-corenlp-full*/**
+**/stanford-corenlp-full.*/**
 corenlp*
 client.py
 progressbar*
