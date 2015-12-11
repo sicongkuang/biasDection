@@ -1,13 +1,13 @@
 import json
 from corenlp import StanfordCoreNLP
 
-def f1f2f3f4f5f6f7():
+def f1f2f3f4f5f6f7(file_,file2_):
     ## using corenlp to do split up job
     ## corenlp setting
     corenlp_dir = "stanford-corenlp-full-2014-08-27/"
     corenlp = StanfordCoreNLP(corenlp_dir)
     ## load dataset
-    with open('../../dataclean_Nov8_2015/test_afterdataclean_modifiedcleanedTupleNov8.json') as t:
+    with open(file_) as t:
         trainTup = json.load(t)
     ## data structure to hold fea1 to fea7 a list
     feaLst = []
@@ -56,7 +56,7 @@ def f1f2f3f4f5f6f7():
         for i in feaLst:
             print 'w:',i['Word'],' lemma:',i['Lemma'],' pos-2:',i['POS-2'],' pos-1:',i['POS-1'],' pos:',i['POS'],' pos+1:',i['POS+1'],' pos+2:',i['POS+2']
         
-    with open('../../retryData/test_f1f2f3f4f5f6f7_Nov25.json','w') as o:
+    with open(file2_,'w') as o:
         json.dump(feaLst,o)
     print len(feaLst)
 
@@ -64,5 +64,11 @@ def f1f2f3f4f5f6f7():
 
 
 
+def howmanysent(file_):
+    with open(file_) as f:
+        sents = json.load(f)
+    print len(file_)
 
-f1f2f3f4f5f6f7()
+
+# f1f2f3f4f5f6f7('../../devDataclean_Dec8_2015/dev_afterdataclean_modifiedcleanedTuple_elimBiasWord0orMoreThanOne_fullTup_Dec11.json', '../../devDataclean_Dec8_2015/dev_f1f2f3f4f5f6f7_Dec11.json')
+howmanysent('../../devDataclean_Dec8_2015/dev_afterdataclean_modifiedcleanedTuple_elimBiasWord0orMoreThanOne_fullTup_Dec11.json')
