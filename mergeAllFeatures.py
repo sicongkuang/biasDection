@@ -1,4 +1,8 @@
+import StanfordDependencies
+import os
 import json
+from nltk.parse import stanford
+import sys
 from corenlp import StanfordCoreNLP
 ## all features from tupleSet Nov16 version (not reduce [8666:8678], the tuple split unequal in depent with corenlp)
 def mergeFullfeature_notIncludeF30():
@@ -246,7 +250,7 @@ def remove_tuples0MoreThan1BiasedWord():
         json.dump(res,u)
     
 
-
+## make sure two dev files: split col8 version (elim num & punc elimi biased word 0 or >1) match the original col8 version (elim biased word 0 or >1)
 def remove_tuples0MoreThan1BiasedWord_fromOriginalTuple():
     ## using corenlp to do split up job
     ## corenlp setting
@@ -256,9 +260,13 @@ def remove_tuples0MoreThan1BiasedWord_fromOriginalTuple():
     ## load dataset
     with open('../../devDataclean_Dec8_2015/dev_afterdataclean_modifiedcleanedTupleDec9.json') as t:
         trainTup = json.load(t)
+    # with open('../../devDataclean_Dec8_2015/dev_afterdataclean_modifiedcleanedTuple_splitTitleNumBW_stripPuncNum_Dec9.json') as a:
+        # verify = json.load(a)
+    b =  open('../../devDataclean_Dec8_2015/dev_biasword0ormorethan1_modifiedFile_dec11.txt','w')
 
     res2 = []
     for num,tup in enumerate(trainTup):
+        print num
         ## after modify col8 and save, col8 now may be empty..
         if not tup[8]:
             continue
@@ -269,19 +277,90 @@ def remove_tuples0MoreThan1BiasedWord_fromOriginalTuple():
         temp = []
         for s in slist:
             temp.append(s[0])
-        print "good"
+
         ## count of biased word
-        num = temp.count(tup[6])
-        if num == 1:
+        cnum = temp.count(tup[6])
+        
+        if cnum == 1:
+            ## verify if the qualified sent is the same as the split col8 file: dev_afterdataclean_modifiedcleanedTuple_splitTitleNumBW_Dec9.json
+            # if (verify[num][2] == tup[6]) and (verify[num][0] == tup[0]):
             res2.append(tup)
-    # with open('../../devDataclean_Dec8_2015/dev_afterdataclean_modifiedcleanedTupleDec10.json','w') as f:
-        # json.dump()
+            # else:
+                # print "two file are diff"
+                # print verify[num]
+                # print tup
+                # sys.exit()
+        else:
+            b.write(str(tup)+'\n') 
+    with open('../../devDataclean_Dec8_2015/dev_afterdataclean_modifiedcleanedTuple_elimBiasWord0orMoreThanOne_fullTup_Dec11.json','w') as f:
+        json.dump(res2,f)
+    b.close()
+
+def compareTwoFileByRevisionNumBiasedWord():
+    with open('../../devDataclean_Dec8_2015/dev_afterdataclean_modifiedcleanedTuple_elimBiasWord0orMoreThanOne_fullTup_Dec11.json') as f1:
+        full = json.load(f1)
+    with open('../../devDataclean_Dec8_2015/dev_afterdataclean_modifiedcleanedTuple_splitTitleNumBW_stripPuncNum_elimBiasWord0orMoreThanOne_Dec9.json') as f2:
+        split = json.load(f2)
+    for i,j in zip(full,split):
+        if (i[6] == j[2]) and (i[1] == j[1]):
+            pass
+        else:
+            print i
+            print j
+    print 'ok'
+
+
+def checkCoreNLPSplit_DependencySplit(file_):
+    with open(file_) as f:
+        tset = json.load(f)
+    ## corenlp setting
+    corenlp_dir = "stanford-corenlp-full-2014-08-27/"
+    corenlp = StanfordCoreNLP(corenlp_dir)
+    
+    ## stanfordDependencies setting
+    sd = StanfordDependencies.get_instance(backend="subprocess",version='3.4.1')
+    os.environ['STANFORD_PARSER'] = 'stanford-parser-full-2014-08-27/'
+    os.environ['STANFORD_MODELS'] = 'stanford-parser-full-2014-08-27/'
+    parser = stanford.StanfordParser(model_path="stanford-parser-full-2014-08-27/stanford-parser-3.4.1-models/edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz")
+    
+    for num, tup in enumerate(tset):
+        print num
+        if not tup[8]:
+            continue
+        ## use corenlp to splitup
+        res = corenlp.parse(tup[8])
+        par = json.loads(res)
+        slist = par["sentences"][0]['words']
+        temp = []
+        for s in slist:
+            temp.append(s[0])
+        
+        ## use stanfordDependencies to do split sentence
+        sentences = parser.raw_parse(tup[8])
+        s=""
+        for line in sentences:
+            for sentence in line:
+                s+=str(sentence)
+
+        sent = sd.convert_tree(s)
+        
+        detemp = []
+        for t in sent:
+            detemp.append(t[1])
             
-# remove_tuples0MoreThan1BiasedWord()
+        ## check if same
 
-
-# updateSentLenFile_reduceBiasWordNoneMorethanOne()
-
-# findOriginSentenceContainMultipleBiasWord()
-# updatefullFea_reduceBiasWordNoneMorethanOne()
-remove_tuples0MoreThan1BiasedWord_fromOriginalTuple()
+        for di,ti in zip(detemp,temp):
+            if di == ti:
+                pass
+            else:
+                if (ti == '(' and di == '-LRB-') or (ti == ')' and di == '-RRB-') or (ti == '[' and di == '-LSB-') or (ti == ']' and di == '-RSB-'):
+                    print "diff in parenthesis"
+                    pass
+                else:
+                    print "!!!"
+                    print "{",di,' ,',ti," }"
+    
+            
+            
+checkCoreNLPSplit_DependencySplit('../../devDataclean_Dec8_2015/dev_afterdataclean_modifiedcleanedTuple_elimBiasWord0orMoreThanOne_fullTup_Dec11.json')
