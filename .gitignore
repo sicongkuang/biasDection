@@ -1,0 +1,6 @@
+default.properties
+**/stanford-corenlp-full*/**
+corenlp*
+client.py
+progressbar*
+__init__.py
