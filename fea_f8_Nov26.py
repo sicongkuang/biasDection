@@ -34,12 +34,12 @@ def postionInSentence(s, i, n=3):
 
 
 ## put the whole sentence with punctuation and number and divide it into 3 parts
-def f8_positionInsentence():
+def f8_positionInsentence(path_,newpath_):
     ## load dataset
     # with open('../../dataclean_Nov8_2015/test_afterdataclean_modifiedcleanedTupleNov8.json') as t:
         # trainTup = json.load(t)
     # print trainTup[0]
-    with open('../../stripPuncNumber_Nov16_2015/test_afterdataclean_modifiedcleanedTuple_splitTitleNumBW_stripPuncNum_Nov16.json') as f:
+    with open(path_) as f:
         tupleSet = json.load(f)
     res = []
     for tupl in tupleSet:
@@ -50,7 +50,7 @@ def f8_positionInsentence():
             tdict['Word'] = word
             tdict['Position in sentence'] = pos
             res.append(tdict)
-    with open('../../retryData/test_fea8_noPuncNum_Nov27.json','w') as r:
+    with open(newpath_,'w') as r:
         json.dump(res,r)
             
-f8_positionInsentence()
+f8_positionInsentence('../../devDataclean_Dec8_2015/dev_afterdataclean_modifiedcleanedTuple_splitTitleNumBW_stripPuncNum_elimBiasWord0orMoreThanOne_Dec9.json','../../devDataclean_Dec8_2015/dev_f8_corenlpSplit_elimBias0orMoreThan1_Dec12.json')
