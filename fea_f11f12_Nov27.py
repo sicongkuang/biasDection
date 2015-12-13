@@ -1,10 +1,10 @@
 import json
 import codecs
-def f11():
+def f11(path_,factivePath_,newpath_):
     ## load factive list
-    FactiveLst = filter(None,[ line.rstrip() for line in codecs.open('/home/sik211/dusk/npov_data/bias_related_lexicons/factives_hooper1975.txt','r','utf-8') if ('#' not in line)])
+    FactiveLst = filter(None,[ line.rstrip() for line in codecs.open(factivePath_,'r','utf-8') if ('#' not in line)])
     ## load dataset
-    with open('../../stripPuncNumber_Nov16_2015/test_afterdataclean_modifiedcleanedTuple_splitTitleNumBW_stripPuncNum_Nov16.json') as f:
+    with open(path_) as f:
         tupleSet = json.load(f)
     res = []
     for num,tupl in enumerate(tupleSet):
@@ -20,7 +20,7 @@ def f11():
             tdict['Word'] = word
             tdict['Factive verb'] = wfactive
             res.append(tdict)
-    with open('../../retryData/test_fea11_factiveVerb_noPuncNum_Nov27.json','w') as r:
+    with open(newpath_,'w') as r:
         json.dump(res,r)
 
 def contextCheck(checkLst,senWl,i):
@@ -47,11 +47,11 @@ def contextCheck(checkLst,senWl,i):
     return False
 
 
-def f12():
+def f12(path_,factivePath_,newpath_):
     ## load factive list
-    FactiveLst = filter(None,[ line.rstrip() for line in codecs.open('/home/sik211/dusk/npov_data/bias_related_lexicons/factives_hooper1975.txt','r','utf-8') if ('#' not in line)])
+    FactiveLst = filter(None,[ line.rstrip() for line in codecs.open(factivePath_,'r','utf-8') if ('#' not in line)])
     ## load dataset
-    with open('../../stripPuncNumber_Nov16_2015/train_afterdataclean_modifiedcleanedTuple_splitTitleNumBW_stripPuncNum_Nov16.json') as f:
+    with open(path_) as f:
         tupleSet = json.load(f)
     res = []
     for num,tupl in enumerate(tupleSet):
@@ -63,6 +63,8 @@ def f12():
             tdict['Factive verb in context'] = ftext
             res.append(tdict)
             print ind, word, ftext
-    with open('../../train_fea12_factiveVerbInContext_noPuncNum_Nov28.json','w') as o:
+    with open(newpath_,'w') as o:
         json.dump(res,o)
-f12()
+
+# f11('../../devDataclean_Dec8_2015/dev_afterdataclean_modifiedcleanedTuple_splitTitleNumBW_stripPuncNum_elimBiasWord0orMoreThanOne_Dec9.json','/home/sik211/dusk/npov_data/bias_related_lexicons/factives_hooper1975.txt','../../devDataclean_Dec8_2015/dev_f11_factive_corenlpSplit_elimBias0orMoreThan1_Dec12.json')
+f12('../../devDataclean_Dec8_2015/dev_afterdataclean_modifiedcleanedTuple_splitTitleNumBW_stripPuncNum_elimBiasWord0orMoreThanOne_Dec9.json','/home/sik211/dusk/npov_data/bias_related_lexicons/factives_hooper1975.txt','../../devDataclean_Dec8_2015/dev_f12_factiveContext_corenlpSplit_elimBias0orMoreThan1_Dec13.json')
