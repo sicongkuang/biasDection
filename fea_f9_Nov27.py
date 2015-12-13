@@ -1,10 +1,10 @@
 import codecs
 import json
-def f9():
+def f9(path_,hedgePath_,newpath_):
     ## load hedge list
-     HedgeLst = filter(None,[ line.rstrip() for line in codecs.open('/home/sik211/dusk/npov_data/bias_related_lexicons/hedges_hyland2005.txt','r','utf-8') if ('#' not in line)])
+     HedgeLst = filter(None,[ line.rstrip() for line in codecs.open(hedgePath_,'r','utf-8') if ('#' not in line)])
      ## load dataset
-     with open('../../stripPuncNumber_Nov16_2015/train_afterdataclean_modifiedcleanedTuple_splitTitleNumBW_stripPuncNum_Nov16.json') as f:
+     with open(path_) as f:
         tupleSet = json.load(f)
      res = []
      for tupl in tupleSet:
@@ -19,7 +19,7 @@ def f9():
              tdict['Word'] = word
              tdict['Hedge'] = whedge
              res.append(tdict)
-     with open('../../retryData/train_fea9_noPuncNum_Nov27.json','w') as r:
+     with open(newpath_,'w') as r:
          json.dump(res,r)
 
 def contextCheck(checkLst,senWl,i):
@@ -47,12 +47,12 @@ def contextCheck(checkLst,senWl,i):
 
 
 ## context check(2 words ahead and 2 words below)
-def f10():
+def f10(path_,hedgePath_,feaPath_):
      ## load dataset
-     with open('../../stripPuncNumber_Nov16_2015/test_afterdataclean_modifiedcleanedTuple_splitTitleNumBW_stripPuncNum_Nov16.json') as f:
+     with open(path_) as f:
         tupleSet = json.load(f)
     ## load hedge list
-     HedgeLst = filter(None,[ line.rstrip() for line in codecs.open('/home/sik211/dusk/npov_data/bias_related_lexicons/hedges_hyland2005.txt','r','utf-8') if ('#' not in line)])
+     HedgeLst = filter(None,[ line.rstrip() for line in codecs.open(hedgePath_,'r','utf-8') if ('#' not in line)])
 
      res = []
      for num,tupl in enumerate(tupleSet):
@@ -64,8 +64,10 @@ def f10():
                tdict['Hedge in context'] = htext
                res.append(tdict)
                print ind, word, htext
-     with open('../../test_fea10_hedgeInContext_noPuncNum_Nov28.json','w') as o:
+     with open(feaPath_,'w') as o:
           json.dump(res,o)
 
-f10()
+# f10()
                
+# f9('../../devDataclean_Dec8_2015/dev_afterdataclean_modifiedcleanedTuple_splitTitleNumBW_stripPuncNum_elimBiasWord0orMoreThanOne_Dec9.json','/home/sik211/dusk/npov_data/bias_related_lexicons/hedges_hyland2005.txt','../../devDataclean_Dec8_2015/dev_f9_corenlpSplit_elimBias0orMoreThan1_Dec12.json')
+f10('../../devDataclean_Dec8_2015/dev_afterdataclean_modifiedcleanedTuple_splitTitleNumBW_stripPuncNum_elimBiasWord0orMoreThanOne_Dec9.json','/home/sik211/dusk/npov_data/bias_related_lexicons/hedges_hyland2005.txt','../../devDataclean_Dec8_2015/dev_f10_HedgeContext_corenlpSplit_elimBias0orMoreThan1_Dec13.json')
