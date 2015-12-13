@@ -56,13 +56,13 @@ freqArtDict = {}
 wordFeature = []
 
 ## global var: indir hold the position of articles
-indir = "/home/sik211/dusk/npov-data/npov-test"
+indir = "/home/sik211/dusk/npov-data/npov-dev"
 
 ## input:the split col8 with article title and revision number and col6 word NOTE: indir, dataset(tupleSet) and fea32's dumped file should be unianmous in train or test.
 ## output: a json and a txt file of single word and feature 32 collaborative feature
-def fea32_generation():
+def fea32_generation(path,f32path):
     ## load dataset
-    with open('../../stripPuncNumber_Nov16_2015/test_afterdataclean_modifiedcleanedTuple_splitTitleNumBW_stripPuncNum_Nov16.json') as f:
+    with open(path) as f:
         tupleSet = json.load(f)
     ## a var to hold all words count for a article
     global freqArtDict 
@@ -92,7 +92,7 @@ def fea32_generation():
             print num,tdict
             fea32.append(tdict)
         articleNpov(tupl[0],tupl[2])
-    with open('../../retryData/test_fea32_nov23.json','w') as r:
+    with open(f32path,'w') as r:
         json.dump(fea32,r)
     print len(fea32)
     print len(tupleSet)
@@ -191,5 +191,5 @@ def getCount(artName):
             return artDict
     return -1
 
-# fea32_generation()
-filter_col8_punctuation_number()
+fea32_generation('../../devDataclean_Dec8_2015/dev_afterdataclean_modifiedcleanedTuple_splitTitleNumBW_stripPuncNum_elimBiasWord0orMoreThanOne_Dec9.json','../../devDataclean_Dec8_2015/dev_f32_nopuncNum_elimBiasWord0MoreThan1_Dec13.json')
+# filter_col8_punctuation_number()
