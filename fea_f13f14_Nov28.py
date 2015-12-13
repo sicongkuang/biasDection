@@ -1,11 +1,11 @@
 import json
 import codecs
 
-def f13():
+def f13(path_,assertivePath_,newpath_):
     ## load assertive verb list
-    AssertiveLst = filter(None,[ line.rstrip() for line in codecs.open('/home/sik211/dusk/npov_data/bias_related_lexicons/assertives_hooper1975.txt','r','utf-8') if ('#' not in line)])
+    AssertiveLst = filter(None,[ line.rstrip() for line in codecs.open(assertivePath_,'r','utf-8') if ('#' not in line)])
     ## load dataset
-    with open('../../stripPuncNumber_Nov16_2015/train_afterdataclean_modifiedcleanedTuple_splitTitleNumBW_stripPuncNum_Nov16.json') as f:
+    with open(path_) as f:
         tupleSet = json.load(f)
     res = []
     for num,tupl in enumerate(tupleSet):
@@ -21,7 +21,7 @@ def f13():
             tdict['Word'] = word
             tdict['Assertive verb'] = wassertive
             res.append(tdict)
-    with open('../../retryData/train_fea13_assertiveVerb_noPuncNum_Nov28.json','w') as r:
+    with open(newpath_,'w') as r:
         json.dump(res,r)
 
 def contextCheck(checkLst,senWl,i):
@@ -48,12 +48,12 @@ def contextCheck(checkLst,senWl,i):
     return False
 
 
-def f14():
+def f14(path_,assertivePath_,newpath_):
     ## load assertive verb list
-    AssertiveLst = filter(None,[ line.rstrip() for line in codecs.open('/home/sik211/dusk/npov_data/bias_related_lexicons/assertives_hooper1975.txt','r','utf-8') if ('#' not in line)])
+    AssertiveLst = filter(None,[ line.rstrip() for line in codecs.open(assertivePath_,'r','utf-8') if ('#' not in line)])
 
     ## load dataset
-    with open('../../stripPuncNumber_Nov16_2015/test_afterdataclean_modifiedcleanedTuple_splitTitleNumBW_stripPuncNum_Nov16.json') as f:
+    with open(path_) as f:
         tupleSet = json.load(f)
     res = []
     for num,tupl in enumerate(tupleSet):
@@ -65,7 +65,9 @@ def f14():
             tdict['Assertive verb in context'] = atext
             res.append(tdict)
             print ind, word, atext
-    with open('../../test_fea14_assertiveVerbInContext_noPuncNum_Nov28.json','w') as o:
+    with open(newpath_,'w') as o:
         json.dump(res,o)
-f14()
 
+# f13('../../devDataclean_Dec8_2015/dev_afterdataclean_modifiedcleanedTuple_splitTitleNumBW_stripPuncNum_elimBiasWord0orMoreThanOne_Dec9.json','/home/sik211/dusk/npov_data/bias_related_lexicons/assertives_hooper1975.txt','../../devDataclean_Dec8_2015/dev_f13_assertive_corenlpSplit_elimBias0orMoreThan1_Dec13.json')
+
+f14('../../devDataclean_Dec8_2015/dev_afterdataclean_modifiedcleanedTuple_splitTitleNumBW_stripPuncNum_elimBiasWord0orMoreThanOne_Dec9.json','/home/sik211/dusk/npov_data/bias_related_lexicons/assertives_hooper1975.txt','../../devDataclean_Dec8_2015/dev_f14_assertiveContext_corenlpSplit_elimBias0orMoreThan1_Dec13.json')
