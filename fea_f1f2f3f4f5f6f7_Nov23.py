@@ -53,12 +53,13 @@ def f1f2f3f4f5f6f7(file_,file2_):
             else:
                 val['POS+2'] = "NA"
         
-        for i in feaLst:
-            print 'w:',i['Word'],' lemma:',i['Lemma'],' pos-2:',i['POS-2'],' pos-1:',i['POS-1'],' pos:',i['POS'],' pos+1:',i['POS+1'],' pos+2:',i['POS+2']
+    for i in feaLst:
+        print 'w:',i['Word'],' lemma:',i['Lemma'],' pos-2:',i['POS-2'],' pos-1:',i['POS-1'],' pos:',i['POS'],' pos+1:',i['POS+1'],' pos+2:',i['POS+2']
         
     with open(file2_,'w') as o:
         json.dump(feaLst,o)
     print len(feaLst)
+    print len(trainTup)
 
 
 
@@ -67,7 +68,7 @@ def f1f2f3f4f5f6f7(file_,file2_):
 def howmanysent(file_):
     with open(file_) as f:
         sents = json.load(f)
-    print len(file_)
+    print len(sents)
 
 
 # f1f2f3f4f5f6f7('../../devDataclean_Dec8_2015/dev_afterdataclean_modifiedcleanedTuple_elimBiasWord0orMoreThanOne_fullTup_Dec11.json', '../../devDataclean_Dec8_2015/dev_f1f2f3f4f5f6f7_Dec11.json')
