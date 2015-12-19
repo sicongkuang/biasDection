@@ -1,7 +1,7 @@
 import json
-def createLabel():
+def createLabel(path,labelPath_):
      ## load dataset
-     with open('../../stripPuncNumber_Nov16_2015/test_afterdataclean_modifiedcleanedTuple_splitTitleNumBW_stripPuncNum_Nov16.json') as f:
+     with open(path) as f:
         tupleSet = json.load(f)
      res = []
      for tupl in tupleSet:
@@ -12,10 +12,10 @@ def createLabel():
              else:
                  tupl_res.append((word,1))
          res = res + tupl_res
-     with open('../../retryData/test_labels_fullNov16Ver_Dec1','w') as l:
+     with open(labelPath_,'w') as l:
          json.dump(res,l)
 
-createLabel()
+createLabel('../../devDataclean_Dec8_2015/dev_afterdataclean_modifiedcleanedTuple_splitTitleNumBW_stripPuncNum_elimBiasWord0orMoreThanOne_Dec9.json','../../devDataclean_Dec8_2015/dev_labelwithWord_stripPuncNum_elimBiasWord0orMoreThanOne_Dec13.json')
              
 
 
